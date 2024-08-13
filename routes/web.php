@@ -18,8 +18,10 @@ Route::group(['middleware' => 'auth'], function () {
 	Route::get('/home', 		[HomeController::class, 'index'])->name('home');
 	Route::post('logout', 		[LoginController::class, 'logout'])->name('logout');
 
-	Route::get('/register', 	[RegisterController::class, 'create'])->name('register');
-	Route::post('/register', 	[RegisterController::class, 'store'])->name('register.perform');
+
+
+
+	Route::resource('user',UserController::class);
 
 
 });

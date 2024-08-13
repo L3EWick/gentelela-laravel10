@@ -11,13 +11,12 @@ class UserController extends Controller
 {
     public function index()
     {
-        $users = User::where('name','!=','Victor Mussel')->get();
+        $users = User::all();
         return view('pages.usuario.index', compact('users'));
     }
 
     public function create()
     {
-
         return view('pages.usuario.create');
     }
 
@@ -31,13 +30,32 @@ class UserController extends Controller
         $user->name  = $data->name;
         $user->email = $data->email;
         $user->nivel = $data->nivel;
-        $user->password = 'campanha123';
+        $user->password = 'ultracode123456';
         
         // dd($user);
         $user->save();
 
         return redirect('/user');
     }
+
+    public function edit($id){
+        $user = User::find($id);
+        return view("pages.usuario.edit", compact('user'));
+    } 
+
+    public function update(Request $request, $id){
+        $user = User::find($id);
+
+        $user->name = $request->name;
+        $user->email = $request->email;
+        $user->nivel = $request->nivel;
+
+        $user->save();
+
+        return redirect()->route('user.index');
+
+    }
+
 
     public function AlteraSenha()
 	{
@@ -51,8 +69,7 @@ class UserController extends Controller
 	public function SalvarSenha(Request $request)
 	{
 	
-        // dd($request->all());
-		// Validar
+
 		$this->validate($request, [
 			'password_atual'        => 'required',
 			'password'              => 'required|min:6|confirmed',
@@ -74,4 +91,9 @@ class UserController extends Controller
 		}
 
 	}
+
+    public function destroy($id){
+        $user = User::find($id);
+        $user->delete();
+    }
 }

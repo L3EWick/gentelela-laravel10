@@ -1,71 +1,108 @@
-@extends('layouts.app', ['class' => 'g-sidenav-show bg-gray-100'])
-<link rel="stylesheet" href="assets/css/jquery.dataTables.min.css"> 
+@extends('gentelella.layouts.app')
+
 @section('content')
-    @include('layouts.navbars.auth.topnav')
-    <div class="container-fluid px-2">
-        <div class="row">
-            <div class="col-md-12">
-                <div class="col-md-12 mb-lg-0 mb-4">
-                    <div class="card mt-4">
-                        <div class="card-header pb-0 p-3">
-                            <div class="row">
-                                <div class="col-6 d-flex align-items-center">
-                                    <h6 class="mb-0">Usuarios</h6>
-                                </div>
-                                <div class="col-6 text-end">
-                                    <a class="btn bg-gradient-dark mb-0" href="{{ url('user/create')}}"> Novo Usuario</a>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="card-body p-3">
-                            <div class="row">
-                                
-                                <table id="myTable" class="display">
-                                    <thead>
-                                        <tr>
-                                            <th>Nome</th>
-                                            <th>Email</th>
-                                            <th>Nivel</th>
-                                            <th>Ações</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                      @foreach ($users as $user)
-                                          <tr>
-                                            <td>{{$user->name}}</td>
-                                            <td>{{$user->email}}</td>
-                                            <td>{{$user->nivel}}</td>
-                                            <td></td>
-                                          </tr>
-                                      @endforeach
-                                    </tbody>
-                                </table>
+    <div class="x_panel modal-content ">
+		<div class="x_title">
+			<h2>Funcionários</h2>
+			<ul class="nav navbar-right panel_toolbox">
+			    <a href="{{route('user.create')}}" class="btn-circulo btn  btn-success btn-md  pull-right " data-toggle="tooltip" data-placement="bottom" title="" data-original-title="Novo Usuario"> Novo Usuário </a>
+			</ul>
+			<div class="clearfix"></div>
+		</div>
+        <div class="x_panel ">
+			<div class="x_content">
+				<table id="tb_user" class="table table-hover table-striped compact">
+					<thead>
+						<tr>
+							<th>Nome</th>
+							<th>Email</th>
+							<th>Permissão</th>
+							<th>Ações</th>
+						</tr>
+					</thead>
+					<tbody>
+                        @foreach ($users as $usuario)
+                            <tr>
+							    <td>{{$usuario->name}}</td>
+							    <td>{{$usuario->email}}</td>
+								<td>{{$usuario->nivel}}</td>
+                                <td class="actions">
+                                   
+										<a
+											href="{{route('user.edit', $usuario->id)}}"
+											class="btn btn-warning btn-xs action botao_acao btn_editar" 
+											data-toggle="tooltip" 
+											data-placement="bottom" 
+											title="Definir Equipe">  
+											<i class="glyphicon glyphicon-pencil "></i>
+										</a>
 
-
-
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+                                 @if(Auth::User()->id != $usuario->id )
+								    <a
+									    id="btn_exclui_funcionario"
+									    class="btn btn-danger btn-xs action botao_acao btn_excluir"
+									    data-voluntario = {{$usuario->id}}
+									    title="Apagar Usuario">
+									    <i class="glyphicon glyphicon-remove "></i>
+								    </a>
+                                   @endif 
+                                </td>
+							</tr>
+                        @endforeach	
+					</tbody>
+				</table>
+			</div>
+		</div>
     </div>
-
-    
 @endsection
 
-@push('js')
-<script src="assets/js/jquery.dataTables.min.js"></script>
-<script>
-    var myTable = $("#myTable").DataTable({
-        language: {
-            'url' : '{{ asset('assets/js/portugues.json') }}',
-			"decimal": ",",
-			"thousands": ".",
-        },
-        stateSave: true,
-        stateDuration: -1,
-        responsive: true,
-    })
-</script>
+@push('scripts')
+	<script type="text/javascript" src="https://cdn.datatables.net/plug-ins/1.10.20/sorting/date-uk.js"></script>
+	<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+
+	<script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+	<script>
+ $("table#tb_user").on("click", "#btn_exclui_funcionario" ,function(){
+		let id = $(this).data('voluntario');
+				// console.log(id);
+				let btn = $(this);
+               Swal.fire({
+                           title: 'Você tem certeza?',
+                           text: "Você não poderá reverter isso!",
+                           icon: 'warning',
+                           showCancelButton: true,
+                           confirmButtonColor: '#3085d6',
+                           cancelButtonColor: '#d33',
+                           confirmButtonText: 'Sim, delete isso!'
+                           }).then((result) => {
+                           if (result.isConfirmed) {
+                              $.post("{{ url('/user') }}/" + id, {
+								      id: id,
+								      _method: "DELETE",
+                              _token: "{{ csrf_token() }}"
+								     
+							         }).done(function() {
+								      location.reload();
+							         });
+                        
+                           }
+                        })
+                     
+
+  });
+	</script>
+    <script>
+        $(document).ready(function(){
+            var tb_user = $("#tb_user").DataTable({
+                language: {
+                    'url' : '{{ asset('js/portugues.json') }}',
+					"decimal": ",",
+					"thousands": "."
+                },
+                stateSave: true,
+                stateDuration: -1,
+                responsive: true,
+            })
+        });
+    </script>
 @endpush

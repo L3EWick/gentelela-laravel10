@@ -1,7 +1,6 @@
-@extends('layouts.app', ['class' => 'g-sidenav-show bg-gray-100'])
-<link rel="stylesheet" href="assets/css/jquery.dataTables.min.css"> 
+@extends('gentelella.layouts.app')
+
 @section('content')
-    @include('layouts.navbars.auth.topnav')
     <div class="container">
         <div class="row justify-content-md-center">
             <div class="col-md-6 mb-lg-0 mb-4">
@@ -53,7 +52,6 @@
 
     
 @endsection
-
 
 
 

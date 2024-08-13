@@ -4,6 +4,9 @@
 			<li>
 				<a href="{{ route('home')}}"><i class="fas fa-home"></i> Principal </a>
 			</li> 
+			<li>
+                <a href="{{ route('user.index') }}"><i class="fas fa-user"></i> Usuários </a>
+      </li>
 			
 
 		</ul>	
