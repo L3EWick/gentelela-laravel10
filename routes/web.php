@@ -8,10 +8,7 @@ use App\Http\Controllers\LoginController;
 use App\Http\Controllers\UserController;
 
 
-Route::get('/',  [LoginController::class, 'show'])->name('login');
 
-
-Route::post('/login', [LoginController::class, 'login'])->middleware('guest')->name('login.perform');
 
 Route::group(['middleware' => 'auth'], function () {
 	
@@ -27,3 +24,7 @@ Route::group(['middleware' => 'auth'], function () {
 
 });
  
+Route::get('/',  [LoginController::class, 'show'])->name('login');
+
+
+Route::post('/login', [LoginController::class, 'login'])->middleware('guest')->name('login.perform');
